@@ -26,7 +26,9 @@ function Topbar() {
                     <Link to='/'>
                         <span className="topbarLink">Home</span>
                     </Link>
-                    <span className="topbarLink">Timeline</span>
+                    <Link to={`/${user.username}`}>
+                        <span className="topbarLink">Timeline</span>
+                    </Link>
                 </div>
                 <div className="topbarIcons">
                     <div className="topbarIconItem">

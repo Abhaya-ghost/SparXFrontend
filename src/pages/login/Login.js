@@ -31,9 +31,11 @@ function Login() {
               {isFetching ? <CircularProgress style={{color:'white',fontSize:'20px'}}/> : 'Log In'}
             </button>
             <span className="loginForgot">Forgot Password?</span>
+            <Link to='/register'>
             <button className="loginRegisterButton">
               {isFetching ? <CircularProgress style={{color:'white',fontSize:'20px'}}/> : 'Create a new account'}
             </button>
+            </Link>
           </form>
         </div>
       </div>
