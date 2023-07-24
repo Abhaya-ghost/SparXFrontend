@@ -23,10 +23,10 @@ function Topbar() {
             </div>
             <div className="topbarRight">
                 <div className="topbarLinks">
-                    <Link to='/'>
+                    <Link to='/' style={{ textDecoration: 'none' ,color:'white'}}>
                         <span className="topbarLink">Home</span>
                     </Link>
-                    <Link to={`/${user.username}`}>
+                    <Link to={`/${user.username}`} style={{ textDecoration: 'none' ,color:'white'}}>
                         <span className="topbarLink">Timeline</span>
                     </Link>
                 </div>
@@ -35,7 +35,7 @@ function Topbar() {
                         <Person />
                         <span className="topbarIconBadge">1</span>
                     </div>
-                    <Link to='/messenger'>
+                    <Link to='/messenger' style={{ textDecoration: 'none' ,color:'white'}}>
                         <div className="topbarIconItem">
                             <Chat />
                             <span className="topbarIconBadge">2</span>
