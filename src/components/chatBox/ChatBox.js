@@ -3,6 +3,7 @@ import './ChatBox.css'
 import axios from 'axios'
 import Message from '../message/Message'
 import { io } from 'socket.io-client'
+import { useNavigate } from 'react-router-dom'
 
 function ChatBox({ currentChat, currentUser, setOnlineUsers}) {
     const [msgs, setMsgs] = useState([])
@@ -10,6 +11,12 @@ function ChatBox({ currentChat, currentUser, setOnlineUsers}) {
     const [arrivalMsg, setArrivalMsg] = useState(null)
     const socket = useRef()
     const scrollRef = useRef()
+    const navigate = useNavigate()
+
+    const token = localStorage.getItem('jwt')
+        if(!token){
+          navigate('/login')
+        }
 
     useEffect(() => {
         socket.current = io('https://sparxbackend.onrender.com')
@@ -25,7 +32,10 @@ function ChatBox({ currentChat, currentUser, setOnlineUsers}) {
     useEffect(() => {
         const getMsgs = async () => {
             try {
-                const res = await axios.get('/messages/' + currentChat._id)
+                const res = await axios.get('/messages/' + currentChat._id, {headers:{'Authorization': JSON.parse(token)}})
+                if(res.status === 401){
+                    navigate('/login')
+                  }
                 setMsgs(res.data)
             } catch (error) {
                 console.log(error)
@@ -50,7 +60,10 @@ function ChatBox({ currentChat, currentUser, setOnlineUsers}) {
         })
 
         try {
-            const res = await axios.post('/messages', message)
+            const res = await axios.post('/messages', message, {headers:{'Authorization': JSON.parse(token)}})
+            if(res.status === 401){
+                navigate('/login')
+              }
             setMsgs([...msgs, res.data])
             setNewMsg('')
         } catch (error) {

@@ -5,16 +5,25 @@ import Feed from "../../components/feed/Feed";
 import Rightbar from "../../components/rightbar/Rightbar";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function Profile() {
   const PF = process.env.REACT_APP_PUBLIC_URL;
   const [user,setUser] = useState({})
   const [busy,setBusy] = useState(true)
   const username = useParams().username
+  const navigate = useNavigate()
+
+  const token = localStorage.getItem('jwt')
+      if(!token){
+        navigate('/login')
+      }
   useEffect(() => {
     const fetchUser = async() =>{
-      const res= await axios.get(`users/?username=${username}`)
+      const res= await axios.get(`users/?username=${username}`,{headers:{'Authorization': JSON.parse(token)}})
+      if(res.status === 401){
+        navigate('/login')
+      }
       setUser(res.data);
       setBusy(false)
     };

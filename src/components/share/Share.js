@@ -3,17 +3,29 @@ import './Share.css'
 import {PermMedia, Label,Room, EmojiEmotions, Cancel} from '@mui/icons-material';
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 function Share() {
-  const {user}  = useContext(AuthContext)
+  //const {user}  = useContext(AuthContext)
+  const user = localStorage.getItem('userDetails')
   const PF = process.env.REACT_APP_PUBLIC_URL
   const desc = useRef()
   const [file,setFile] = useState(null)
+  const navigate = useNavigate()
 
   const handleSubmit = async(e) => {
     e.preventDefault()
+
+    if(user==null){
+      navigate('/login')
+    }
+
+    const token = localStorage.getItem('jwt')
+    if(!token){
+      navigate('/login')
+    }
     const newPost = {
-      userId:user._id,
+      userId:JSON.parse(user)._id,
       desc:desc.current.value
     }
     if(file){
@@ -23,13 +35,21 @@ function Share() {
       data.append('name',fileName)
       newPost.img=fileName
       try {
-        await axios.post('/upload', data)
+        const res=await axios.post('/upload', data, {headers:{'Authorization': JSON.parse(token)}})
+        window.location.reload()
+        if(res.status == 401){
+          navigate('/login')
+        }
       } catch (error) {
         console.log(error)
       }
     }
     try {
-      await axios.post('/posts',newPost)
+      const res=await axios.post('/posts',newPost, {headers:{'Authorization': JSON.parse(token)}})
+      window.location.reload()
+      if(res.status == 401){
+        navigate('/login')
+      }
     } catch (error) {
       console.log(error)
     }
@@ -39,9 +59,9 @@ function Share() {
     <div className="share">
       <div className="shareWrapper">
         <div className="shareTop">
-          <img className="shareProfileImg" src={user.profilePic ? PF+user.profilePic : PF+'person/noAvatar.jpg'} alt="" />
+          <img className="shareProfileImg" src={JSON.parse(user).profilePic ? PF+JSON.parse(user).profilePic : PF+'person/noAvatar.jpg'} alt="" />
           <input
-            placeholder={"What's in your mind "+user.username+'?'}
+            placeholder={"What's in your mind "+JSON.parse(user).username+'?'}
             className="shareInput"
             ref={desc}
           />

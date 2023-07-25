@@ -1,12 +1,26 @@
 import './Topbar.css'
 import { Search, Person, Notifications, Chat } from '@mui/icons-material'
-import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { useContext, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/authContext'
 
 function Topbar() {
-    const { user } = useContext(AuthContext)
+    //const { user } = useContext(AuthContext)
+    const user = localStorage.getItem('userDetails')
     const PF = process.env.REACT_APP_PUBLIC_URL
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if(user==null){
+            navigate('/login')
+        }
+    },[])
+
+    const handleClick = () => {
+        const jwtToken= localStorage.removeItem('jwt')
+        const userDetails = localStorage.removeItem('userDetails')
+        navigate('/login')
+    }
 
     return (
         <div className='topbarContainer'>
@@ -22,14 +36,6 @@ function Topbar() {
                 </div>
             </div>
             <div className="topbarRight">
-                <div className="topbarLinks">
-                    <Link to='/' style={{ textDecoration: 'none' ,color:'white'}}>
-                        <span className="topbarLink">Home</span>
-                    </Link>
-                    <Link to={`/${user.username}`} style={{ textDecoration: 'none' ,color:'white'}}>
-                        <span className="topbarLink">Timeline</span>
-                    </Link>
-                </div>
                 <div className="topbarIcons">
                     <div className="topbarIconItem">
                         <Person />
@@ -46,8 +52,11 @@ function Topbar() {
                         <span className="topbarIconBadge">4</span>
                     </div>
                 </div>
-                <Link to={`/${user.username}`}>
-                    <img src={user.profilePic ? PF + user.profilePic : PF + 'person/noAvatar.jpg'} alt="" className="topbarImg" />
+                <div className="topbarLinks">
+                    <span className="topbarLink" onClick={handleClick}>Logout</span>
+                </div>
+                <Link to={`/${JSON.parse(user).username}`}>
+                    <img src={JSON.parse(user).profilePic ? PF + JSON.parse(user).profilePic : PF + 'person/noAvatar.jpg'} alt="" className="topbarImg" />
                 </Link>
             </div>
         </div>
