@@ -8,8 +8,6 @@ import { AuthContext } from "./context/authContext";
 import Messenger from "./pages/messenger/Messenger";
 
 function App() {
-  const {user} = useContext(AuthContext)
-  const token = JSON.parse(localStorage.getItem('jwt'))
   return (
     <Router>
       <Routes>
