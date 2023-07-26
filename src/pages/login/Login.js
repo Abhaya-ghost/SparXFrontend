@@ -21,7 +21,7 @@ function Login() {
     }
     try {
         const res=await axios.post('auth/login', userCredential)
-        console.log(res.data.token)
+        console.log(res.data)
         localStorage.setItem('jwt',JSON.stringify(res.data.token))
         localStorage.setItem('userDetails',JSON.stringify(res.data.user))
         if(JSON.parse(localStorage.getItem('jwt'))){
